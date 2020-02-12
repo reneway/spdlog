@@ -106,7 +106,7 @@ SPDLOG_INLINE void rotating_file_sink<Mutex>::rotate_()
             // this is a workaround to a windows issue, where very high rotation
             // rates can cause the rename to fail with permission denied (because of antivirus?).
             details::os::sleep_for_millis(100);
-            if (!rename_file(src, target))
+            if (!rename_file_(src, target))
             {
                 file_helper_.reopen(true); // truncate the log file anyway to prevent it to grow beyond its limit!
                 current_size_ = 0;
@@ -121,7 +121,7 @@ SPDLOG_INLINE void rotating_file_sink<Mutex>::rotate_()
 // delete the target if exists, and rename the src file  to target
 // return true on success, false otherwise.
 template<typename Mutex>
-SPDLOG_INLINE bool rotating_file_sink<Mutex>::rename_file_(yconst filename_t &src_filename, const filename_t &target_filename)
+SPDLOG_INLINE bool rotating_file_sink<Mutex>::rename_file_(const filename_t &src_filename, const filename_t &target_filename)
 {
     // try to delete the target file in case it already exists.
     (void)details::os::remove(target_filename);
